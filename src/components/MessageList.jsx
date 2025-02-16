@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from "react";
 import socket from "../utils/socket";
 
-const MessageList = ({ currentUser }) => {
+const MessageList = ({ currentUser ,setActiveUsers  }) => {
   const [messages, setMessages] = useState([]);
-  const [systemEvents, setSystemEvents] = useState([]);
+  const [seenSystemMessages, setSeenSystemMessages] = useState(new Set());
 
   useEffect(() => {
     // Handle chat messages
@@ -15,43 +15,45 @@ const MessageList = ({ currentUser }) => {
       }]);
     });
 
-    // Handle user joins
-    socket.on("updateUserList", (userList) => {
-      const existingUsers = systemEvents.map(event => event.user);
-      const newUsers = userList.filter(user => !existingUsers.includes(user));
-      
-      newUsers.forEach(user => {
-        const joinEvent = {
-          type: 'system',
-          eventType: 'join',
-          user,
-          timestamp: Date.now(),
-          text: user === currentUser ? 'You joined' : `${user} joined`
-        };
-        setSystemEvents(prev => [...prev, joinEvent]);
-        setMessages(prev => [...prev, joinEvent]);
-      });
+  // Handle user joins
+  socket.on("updateUserList", (userList) => {
+    setActiveUsers(userList); // Update the sidebar active users
+
+    userList.forEach((user) => {
+      if (!seenSystemMessages.has(user)) {
+        setMessages(prev => [
+          ...prev,
+          { type: "system", eventType: "join", user, text: user === currentUser ? "You joined" : `${user} joined`, timestamp: Date.now() }
+        ]);
+        setSeenSystemMessages(prevSet => new Set(prevSet).add(user));
+      }
+    });
+  });
+
+  // Handle user leaves
+  socket.on("leftUsers", (username) => {
+    if (!username) return;
+
+    setMessages(prev => [
+      ...prev,
+      { type: "system", eventType: "leave", user: username, text: `${username} left`, timestamp: Date.now() }
+    ]);
+
+    setSeenSystemMessages(prevSet => {
+      const newSet = new Set(prevSet);
+      newSet.delete(username);
+      return newSet;
     });
 
-    // Handle user leaves
-    socket.on("leftUsers", (username) => {
-      const leaveEvent = {
-        type: 'system',
-        eventType: 'leave',
-        user: username,
-        timestamp: Date.now(),
-        text: `${username} left`
-      };
-      setSystemEvents(prev => [...prev, leaveEvent]);
-      setMessages(prev => [...prev, leaveEvent]);
-    });
+    setActiveUsers(prev => prev.filter(user => user !== username)); // Remove from active users list
+  });
 
-    return () => {
-      socket.off("receiveMessage");
-      socket.off("updateUserList");
-      socket.off("leftUsers");
-    };
-  }, [currentUser, systemEvents]);
+  return () => {
+    socket.off("receiveMessage");
+    socket.off("updateUserList");
+    socket.off("leftUsers");
+  };
+}, [currentUser, setActiveUsers, seenSystemMessages]);
 
   // Combine and sort all messages and system events
   const allMessages = messages.sort((a, b) => a.timestamp - b.timestamp);

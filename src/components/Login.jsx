@@ -1,7 +1,7 @@
 
 import logo from '../assets/logo.png'
 import bgImg from '../assets/loginbg.png'
-// import socket from '../utils/socket'
+
 
 
 const Login = ({setNewUsers,logNewUser,newUsers}) => {
@@ -22,7 +22,7 @@ const Login = ({setNewUsers,logNewUser,newUsers}) => {
               <img className='w-19 h-19 pb-2'  src={logo} alt="" />
                <h1 className='text-4xl mb-4 '> Chatdot</h1>
             </div>
-            <form className='w-full'>
+            <form className='w-full'onSubmit={logNewUser} >
             <input
                     id="first-name"
                     name="first-name"
@@ -35,7 +35,7 @@ const Login = ({setNewUsers,logNewUser,newUsers}) => {
                     onKeyDown={(e)=> e.key==="Enter"? logNewUser():null}
                   />
                    <button
-                   onClick={logNewUser}
+                   type='submit'
 
             className=" w-full rounded-md bg-blue-500 px-4 py-3 text-xl  text-white shadow-xs hover:bg-blue-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-200"
           >

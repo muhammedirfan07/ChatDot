@@ -10,6 +10,7 @@ const Chatbox = ({ users }) => {
 
   useEffect(() => {
     socket.on("updateUserList", (userList) => {
+      console.log("Updated Active Users List:", userList);
       setActiveUsers(userList);
     });
 
@@ -44,7 +45,7 @@ const Chatbox = ({ users }) => {
           <div className="bg-blue-100 flex-1 rounded-xl p-1 flex flex-col min-h-0">
             {/* Messages Container */}
             <div className="flex-1 overflow-y-auto bg-blue-100 rounded-t-xl scrollbar-thin scrollbar-thumb-amber-500 scrollbar-track-amber-200">
-              <MessageList currentUser={users} />
+              <MessageList setActiveUsers={setActiveUsers} currentUser={users} />
             </div>
 
             <hr className="w-full bg-pink-500 my-1" />
