@@ -59,7 +59,7 @@ const MessageList = ({ currentUser ,setActiveUsers  }) => {
   const allMessages = messages.sort((a, b) => a.timestamp - b.timestamp);
 
   return (
-    <div className="flex flex-col  overflow-y-auto">
+    <div className="flex flex-col p-1 overflow-y-auto">
       {allMessages.map((msg, index) => {
         if (msg.type === 'system') {
           // System message (join/leave)

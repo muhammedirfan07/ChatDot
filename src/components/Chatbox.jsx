@@ -20,16 +20,16 @@ const Chatbox = ({ users }) => {
   }, []);
 
   return (
-    <div className="h-screen w-full bg-gray-300 p-2 sm:p-5 flex flex-col">
-      <div className="flex-1 p-2 w-full bg-white shadow-xl rounded-2xl flex flex-col min-h-0">
+    <div className="h-screen w-full p-2 sm:p-5 flex flex-col">
+      <div className="flex-1 p-2 w-full bg-white shadow-2xl rounded-xl flex flex-col min-h-0">
         {/* Header */}
-        <div className="w-full bg-violet-300 rounded-xl h-12 sm:h-13 px-2 sm:px-4 flex justify-between items-center mb-1 flex-shrink-0">
+        <div className="w-full bg-violet-400 rounded-xl h-12 sm:h-13 px-2 sm:px-4 flex justify-between items-center mb-1 flex-shrink-0">
           <div className="flex items-center">
             <img className="w-8 h-8 sm:w-10 sm:h-10" src={logo} alt="Logo" />
             <h1 className="text-lg sm:text-xl font-semibold ml-2">Chatdot</h1>
           </div>
           <div className="flex items-center">
-            <i className="fa-solid fa-user mr-2 text-blue-400"></i>
+            <i className="fa-solid fa-user mr-1 text-blue-600"></i>
             <span className="text-sm sm:text-base">{users}</span>
           </div>
         </div>
